@@ -1,5 +1,5 @@
 use reth_db::open_db_read_only;
-use reth_primitives::{Address, ChainSpecBuilder, H256, U256};
+use reth_primitives::{Address, ChainSpecBuilder, B256, U256};
 use reth_provider::{
     AccountReader, BlockReader, BlockSource, HeaderProvider, ProviderFactory, ReceiptProvider,
     StateProvider, TransactionsProvider,
@@ -69,7 +69,7 @@ fn header_provider_example<T: HeaderProvider>(provider: T, number: u64) -> eyre:
     assert_ne!(td, U256::ZERO);
 
     // Can query headers by range as well, already sealed!
-    let headers = provider.sealed_headers_range(100..200)?;
+    let headers = provider.sealed_headers_range(100..=200)?;
     assert_eq!(headers.len(), 100);
 
     Ok(())
@@ -101,7 +101,7 @@ fn txs_provider_example<T: TransactionsProvider>(provider: T) -> eyre::Result<()
     let _block = provider.transaction_block(txid)?;
 
     // Can query the txs in the range [100, 200)
-    let _txs_by_tx_range = provider.transactions_by_tx_range(100..200)?;
+    let _txs_by_tx_range = provider.transactions_by_tx_range(100..=200)?;
     // Can query the txs in the _block_ range [100, 200)]
     let _txs_by_block_range = provider.transactions_by_block_range(100..200)?;
 
@@ -180,11 +180,11 @@ fn receipts_provider_example<T: ReceiptProvider + TransactionsProvider + HeaderP
     // For a hypothetical address, we'll want to filter down for a specific indexed topic (e.g.
     // `from`).
     let addr = Address::random();
-    let topic = H256::random();
+    let topic = B256::random();
 
-    // TODO: Make it clearer how to choose between topic0 (event name) and the other 3 indexed
-    // topics. This API is a bit clunky and not obvious to use at the moemnt.
-    let filter = Filter::new().address(addr).topic0(topic);
+    // TODO: Make it clearer how to choose between event_signature(topic0) (event name) and the
+    // other 3 indexed topics. This API is a bit clunky and not obvious to use at the moemnt.
+    let filter = Filter::new().address(addr).event_signature(topic);
     let filter_params = FilteredParams::new(Some(filter));
     let address_filter = FilteredParams::address_filter(&addr.into());
     let topics_filter = FilteredParams::topics_filter(&[topic.into()]);
@@ -209,7 +209,7 @@ fn receipts_provider_example<T: ReceiptProvider + TransactionsProvider + HeaderP
 
 fn state_provider_example<T: StateProvider + AccountReader>(provider: T) -> eyre::Result<()> {
     let address = Address::random();
-    let storage_key = H256::random();
+    let storage_key = B256::random();
 
     // Can get account / storage state with simple point queries
     let _account = provider.basic_account(address)?;

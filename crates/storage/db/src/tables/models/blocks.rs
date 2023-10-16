@@ -1,16 +1,16 @@
 //! Block related models and types.
 
 use reth_codecs::{main_codec, Compact};
-use reth_primitives::{Header, TxNumber, Withdrawal, H256};
-use std::ops::Range;
+use reth_primitives::{Header, TxNumber, Withdrawal, B256};
+use std::ops::RangeInclusive;
 
 /// Total number of transactions.
 pub type NumTransactions = u64;
 
-/// The storage of the block body indices
+/// The storage of the block body indices.
 ///
 /// It has the pointer to the transaction Number of the first
-/// transaction in the block and the total number of transactions
+/// transaction in the block and the total number of transactions.
 #[derive(Debug, Default, Eq, PartialEq, Clone)]
 #[main_codec]
 pub struct StoredBlockBodyIndices {
@@ -28,8 +28,8 @@ pub struct StoredBlockBodyIndices {
 
 impl StoredBlockBodyIndices {
     /// Return the range of transaction ids for this block.
-    pub fn tx_num_range(&self) -> Range<TxNumber> {
-        self.first_tx_num..self.first_tx_num + self.tx_count
+    pub fn tx_num_range(&self) -> RangeInclusive<TxNumber> {
+        self.first_tx_num..=(self.first_tx_num + self.tx_count).saturating_sub(1)
     }
 
     /// Return the index of last transaction in this block unless the block
@@ -65,10 +65,9 @@ impl StoredBlockBodyIndices {
     }
 }
 
-/// The storage representation of a block ommers.
+/// The storage representation of a block's ommers.
 ///
 /// It is stored as the headers of the block's uncles.
-/// tx_amount)`.
 #[main_codec]
 #[derive(Debug, Default, Eq, PartialEq, Clone)]
 pub struct StoredBlockOmmers {
@@ -85,7 +84,7 @@ pub struct StoredBlockWithdrawals {
 }
 
 /// Hash of the block header. Value for [`CanonicalHeaders`][crate::tables::CanonicalHeaders]
-pub type HeaderHash = H256;
+pub type HeaderHash = B256;
 
 #[cfg(test)]
 mod test {
@@ -112,6 +111,6 @@ mod test {
         assert_eq!(block_indices.last_tx_num(), first_tx_num + tx_count - 1);
         assert_eq!(block_indices.next_tx_num(), first_tx_num + tx_count);
         assert_eq!(block_indices.tx_count(), tx_count);
-        assert_eq!(block_indices.tx_num_range(), first_tx_num..first_tx_num + tx_count);
+        assert_eq!(block_indices.tx_num_range(), first_tx_num..=first_tx_num + tx_count - 1);
     }
 }
