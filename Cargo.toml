@@ -299,6 +299,43 @@ panic = "abort"
 codegen-units = 1
 overflow-checks = true
 
+[patch.crates-io]
+revm-inspectors = { path = "../revm-inspectors" }
+alloy-consensus = { path = "../alloy-fork/crates/consensus", default-features = false }
+alloy-contract = { path = "../alloy-fork/crates/contract", default-features = false }
+alloy-eips = { path = "../alloy-fork/crates/eips", default-features = false }
+alloy-genesis = { path = "../alloy-fork/crates/genesis", default-features = false }
+alloy-json-rpc = { path = "../alloy-fork/crates/json-rpc", default-features = false }
+alloy-network = { path = "../alloy-fork/crates/network", default-features = false }
+alloy-network-primitives = { path = "../alloy-fork/crates/network-primitives", default-features = false }
+alloy-node-bindings = { path = "../alloy-fork/crates/node-bindings", default-features = false }
+alloy-provider = { path = "../alloy-fork/crates/provider", features = [
+    "reqwest",
+], default-features = false }
+alloy-pubsub = { path = "../alloy-fork/crates/pubsub" , default-features = false }
+alloy-rpc-client = { path = "../alloy-fork/crates/rpc-client" , default-features = false }
+alloy-rpc-types = { path = "../alloy-fork/crates/rpc-types" , features = [
+    "eth",
+], default-features = false }
+alloy-rpc-types-admin = { path = "../alloy-fork/crates/rpc-types-admin", default-features = false }
+alloy-rpc-types-anvil = { path = "../alloy-fork/crates/rpc-types-anvil", default-features = false }
+alloy-rpc-types-beacon = { path = "../alloy-fork/crates/rpc-types-beacon", default-features = false }
+alloy-rpc-types-debug = { path = "../alloy-fork/crates/rpc-types-debug", default-features = false }
+alloy-rpc-types-engine = { path = "../alloy-fork/crates/rpc-types-engine", default-features = false }
+alloy-rpc-types-eth = { path = "../alloy-fork/crates/rpc-types-eth", default-features = false }
+alloy-rpc-types-mev = { path = "../alloy-fork/crates/rpc-types-mev", default-features = false }
+alloy-rpc-types-trace = { path = "../alloy-fork/crates/rpc-types-trace", default-features = false }
+alloy-rpc-types-txpool = { path = "../alloy-fork/crates/rpc-types-txpool", default-features = false }
+alloy-serde = { path = "../alloy-fork/crates/serde", default-features = false }
+alloy-signer = { path = "../alloy-fork/crates/signer", default-features = false }
+alloy-signer-local = { path = "../alloy-fork/crates/signer-local", default-features = false }
+alloy-transport = { path = "../alloy-fork/crates/transport" }
+alloy-transport-http = { path = "../alloy-fork/crates/transport-http", features = [
+    "reqwest-rustls-tls",
+], default-features = false }
+alloy-transport-ipc = { path = "../alloy-fork/crates/transport-ipc", default-features = false }
+alloy-transport-ws = { path = "../alloy-fork/crates/transport-ws", default-features = false }
+
 [workspace.dependencies]
 # reth
 op-reth = { path = "crates/optimism/bin" }
