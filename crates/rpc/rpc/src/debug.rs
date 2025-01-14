@@ -328,7 +328,11 @@ where
                         return Ok(FourByteFrame::from(&inspector).into());
                     }
                     GethDebugBuiltInTracerType::Erc7562Tracer => {
-                        let mut inspector = Erc7562ValidationTracer::new();
+                        let erc_7562_config = tracer_config
+                            .into_erc_7562_tracer_config()
+                            .map_err(|_| EthApiError::InvalidTracerConfig)?;
+
+                        let mut inspector: Erc7562ValidationTracer = erc_7562_config.into();
                         let inspector = self
                             .eth_api()
                             .spawn_with_call_at(call, at, overrides, move |db, env| {
